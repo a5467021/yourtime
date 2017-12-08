@@ -1,0 +1,6 @@
+# windows
+desktop.ini
+
+#python
+*.pyc
+__pycache__

@@ -1,0 +1,9 @@
+# windows
+desktop.ini
+
+#python
+*.pyc
+__pycache__
+
+# temporary file
+EasyFlask_draft.py
