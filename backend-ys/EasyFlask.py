@@ -16,9 +16,11 @@ app = Flask(__name__);
 
 @app.route('/login', methods = ['POST']) # provides authorization info
 def login():
-    #form = json.loads(request.data);
-    #res = GetAuth(form['username'], form['password']);
-    res = GetAuth(request.form.get('username'), request.form.get('password'));
+    if request.form.get('type') == 'test':
+        res = GetAuth(request.form.get('username'), request.form.get('password'));
+    else:
+        form = json.loads(request.data);
+        res = GetAuth(form['username'], form['password']);
     return pack(json.dumps(res));
 
 @app.route('/login', methods = ['GET'])
@@ -26,15 +28,20 @@ def test_login():
     return '''<form action="/login" method="post">
               <p><input name="username"></p>
               <p><input name="password" type="password"></p>
+              <input type="hidden" name="type" value="test" />
               <p><button type="submit">SLog In</button></p>
               </form>
            ''';
 
 @app.route('/profile', methods = ['POST']) # provides student profile
 def profile_post():
-    token = request.form.get('token');
-    username = request.form.get('username');
-    info = GetGender(username, token);
+    if request.form.get('type') == 'test':
+        token = request.form.get('token');
+        username = request.form.get('username');
+        info = GetGender(username, token);
+    else:
+        info = json.loads(request.data);
+        info = GetGender(info['username'], info['token']);
     return pack(json.dumps(info));
     
 
@@ -43,15 +50,20 @@ def profile_get():
     return '''<form action="/profile" method="post">
               <p><input name="username"></p>
               <p><input name="token"></p>
+              <input type="hidden" name="type" value="test" />
               <p><button type="submit">Logr In</button></p>
               </form>
            ''';
 
 @app.route('/schedule', methods = ['POST'])
 def schedule_post():
-    token = request.form.get('token');
-    username = request.form.get('username');
-    info = GetWeek(username, token);
+    if request.form.get('type') == 'test':
+        token = request.form.get('token');
+        username = request.form.get('username');
+        info = GetWeek(username, token);
+    else:
+        info = json.loads(request.data);
+        info = GetWeek(info['username'], info['token']);
     return pack(json.dumps(info));
     
 @app.route('/schedule', methods = ['GET'])
@@ -59,15 +71,20 @@ def schedule_get():
     return '''<form action="/schedule" method="post">
               <p><input name="username"></p>
               <p><input name="token"></p>
+              <input type="hidden" name="type" value="test" />
               <p><button type="submit">Logr In</button></p>
               </form>
            ''';
 
 @app.route('/current', methods = ['POST'])
 def current_post():
-    token = request.form.get('token');
-    username = request.form.get('username');
-    info = GetCurrentClass(username, token);
+    if request.form.get('type') == 'test':
+        token = request.form.get('token');
+        username = request.form.get('username');
+        info = GetCurrentClass(username, token);
+    else:
+        info = json.loads(request.data);
+        info = GetCurrentClass(info['username'], info['token']);
     return pack(json.dumps(info));
     
 @app.route('/current', methods = ['GET'])
@@ -75,6 +92,7 @@ def current_get():
     return '''<form action="/current" method="post">
               <p><input name="username"></p>
               <p><input name="token"></p>
+              <input type="hidden" name="type" value="test" />
               <p><button type="submit">Logc In</button></p>
               </form>
            ''';
