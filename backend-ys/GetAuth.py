@@ -24,11 +24,11 @@ def GetAuth(username = '', password = ''): # get "Authorization" token
         print('Login success, token is', AuthToken['token']);
     else:
         print('Login error!');
-    return json.dumps(AuthToken);
+    return AuthToken;
 
-def GenHeader(username, password): # generate headers for API post requests
+def GenHeader(token = ''): # generate headers for API post requests
     header = {
-        'Authorization': 'passport ' + GetAuth(username, password),
+        'Authorization': 'passport ' + token,
         'Content-Type': 'application/json'
         };
     return header;

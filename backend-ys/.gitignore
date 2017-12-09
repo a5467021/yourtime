@@ -7,3 +7,7 @@ __pycache__
 
 # temporary file
 EasyFlask_draft.py
+
+# debug file
+update.sh
+remote.sh
