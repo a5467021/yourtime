@@ -4,3 +4,6 @@ desktop.ini
 #python
 *.pyc
 __pycache__
+
+# databases backups
+*.sql

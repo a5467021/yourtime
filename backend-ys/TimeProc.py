@@ -35,28 +35,33 @@ class_end = {
     13: 21 * 3600 + 25 * 60
     };
 
-def IsClassOn(t = '', now = 0):
+def IsClassOn(t = '', now = []): # t is time string, now contains [currentclass, currentweek]
     day = int(t[0]);
     t = int(t[1:]);
     classes = [];
     while t:
         classes.append(t % 100);
         t = int(t / 100);
-    if now in classes:
+    print('now day', now[1], 'class day', day);
+    if not now[1] == day:
+        return 0;
+    if now[0] in classes:
         return 1;
     else:
         return 0;
 
 def ClassTime():
+    print('In \'ClassTime():\'');
     t = time.localtime(time.time());
     current = -1;
+    day = t[6] + 1;
     t = t[3] * 3600 + t[4] * 60 + t[5];
     for n in range(1, 14):
         if t >= class_begin[n] and t <= class_end[n]:
             current = n;
             break;
     print(current);
-    return current;
+    return [current, day];
 
 if __name__ == '__main__':
-    IsClassTime();
+    ClassTime();

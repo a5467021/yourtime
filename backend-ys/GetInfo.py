@@ -40,20 +40,21 @@ def GetProfile(username = '', token = ''):
     return profile.json();
 
 def GetGender(username = '', token = ''):
-    return {'gender': GetProfile(username, token)['base_info']['xb']['mc']};
+    profile = GetProfile(username, token);
+    roll = requests.get(url = 'http://' + loginhost + '/api/user/profile/school_roll', headers = GenHeader(token)).json();
+    print(roll);
+    return {'gender': profile['base_info']['xb']['mc'], 'name': profile['base_info']['xm'], 'department' : roll['school_roll'][0]['xy']};
+    #return {'gender': profile['base_info']['xb']['mc']};
 
 def GetCurrentClass(username = '', token = ''):
+    print('In \'GetCurrentClass(username, token):\'');
     schedule = GetWeek(username, token);
     week = schedule['currentWeek'];
     schedule = schedule['data']['lessons'];
-    t = ClassTime();
     for course in schedule:
         course['week'] = course['week'].split('-');
-        print(course['week']);
         if not (week >= int(course['week'][0]) and week <= int(course['week'][1])):
-            print(0);
             continue;
-        elif IsClassOn(course['time'], t):
-            print(1);
-            return {'courseName': course['name']};
-    return [];
+        elif IsClassOn(course['time'], ClassTime()) :
+            return {'courseName': course['name'], 'status': 1};
+    return {'status': 0};
