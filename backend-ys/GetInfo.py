@@ -41,8 +41,7 @@ def GetRawProfile(username = '', token = ''):
 def GetProfile(username = '', token = ''):
     profile = GetRawProfile(username, token);
     roll = requests.get(url = 'http://' + loginhost + '/api/user/profile/school_roll', headers = GenHeader(token)).json();
-    print(roll);
-    return {'gender': profile['base_info']['xb']['mc'], 'name': profile['base_info']['xm'], 'department' : roll['school_roll'][0]['xy']};
+    return {'gender': profile['base_info']['xb']['mc'], 'name': profile['base_info']['xm'], 'school' : roll['school_roll'][0]['xy']};
     #return {'gender': profile['base_info']['xb']['mc']};
 
 def GetCurrentClass(username = '', token = ''):

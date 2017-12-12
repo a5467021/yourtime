@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 
-from flask import Flask, Response, make_response
+from flask import Flask, make_response
 from flask import request
 from ProjectLib import *
 
@@ -21,6 +21,8 @@ def login():
     else:
         form = json.loads(request.data);
         res = GetAuth(form['username'], form['password']);
+    # User.userid = form['username']
+    # 查询userid，如果有记录的话直接返回，否则创建条目后返回
     return pack(json.dumps(res));
 
 @app.route('/login', methods = ['GET'])
@@ -38,10 +40,10 @@ def profile_post():
     if request.form.get('type') == 'test':
         token = request.form.get('token');
         username = request.form.get('username');
-        info = GetGender(username, token);
+        info = GetProfile(username, token);
     else:
         info = json.loads(request.data);
-        info = GetGender(info['username'], info['token']);
+        info = GetProfile(info['username'], info['token']);
     return pack(json.dumps(info));
     
 
@@ -111,6 +113,27 @@ def start_post():
 @app.route('/start', methods = ['GET'])
 def start_get():
     return '''<form action="/start" method="post">
+              <p><input name="username"></p>
+              <p><input name="token"></p>
+              <input type="hidden" name="type" value="test" />
+              <p><button type="submit">Logc In</button></p>
+              </form>
+           ''';
+
+@app.route('/stop', methods = ['POST'])
+def stop_post():
+    if request.form.get('type') == 'test':
+        token = request.form.get('token');
+        username = request.form.get('username');
+        info = TimerStop(username, token);
+    else:
+        info = json.loads(request.data);
+        info = TimerStop(info['username'], info['token']);
+    return pack(json.dumps(info));
+    
+@app.route('/stop', methods = ['GET'])
+def stop_get():
+    return '''<form action="/stop" method="post">
               <p><input name="username"></p>
               <p><input name="token"></p>
               <input type="hidden" name="type" value="test" />

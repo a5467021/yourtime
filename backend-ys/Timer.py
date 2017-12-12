@@ -16,7 +16,7 @@ def TimerStart(username = '', token = ''):
         this_start = -1;
         # read end
         if this_start == -1:
-            class_start = class_begin[int(list(status['time']).pop())];
+            class_start = class_begin[int(status['time']) % 100];
             # User.write(class_start)
             class_start = 8 * 3600;
             print('Write into MySQL class_start is', class_start);
@@ -32,9 +32,9 @@ def TimerStop(username = '', token = ''):
     # User.userid = username
     print('set userid as', username);
     # set end
-    now = GetRelTime();
+    now = GetRelTime()[0];
     # class_end = User.read(class_end)
-    class_end = 15 * 3600; # 3 pm
+    class_end = 16 * 3600 + 10 * 60; # 3 pm
     print('Read from MySQL class_end is', class_end);
     # read end
     # this_start = User.read(this_start)
@@ -91,4 +91,4 @@ def Submit(username = ''):
     return {'status': 1};
 
 if __name__ == '__main__':
-    TimerStart();
+    TimerStop();

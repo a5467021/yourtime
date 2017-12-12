@@ -9,5 +9,4 @@ __pycache__
 EasyFlask_draft.py
 
 # debug file
-update.sh
-remote.sh
+*.sh
