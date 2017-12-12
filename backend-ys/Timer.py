@@ -5,21 +5,24 @@ from dbIO import *
 
 def TimerStart(username = '', token = ''):
     print('In \'TimerStart(username, token):\'');
+    user = User(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+    user.userid = username;
     status = GetCurrentClass(username, token);
-    # User.userid = username
-    print('set userid as', username);
-    # set end
     if not status['status']:
         return {'status': 0, 'message': 'Class not on now'};
     else:
+        this_start = user.query_thisstart(user);
         # this_start = User.read(this_start)
         this_start = -1;
         # read end
         if this_start == -1:
-            class_start = class_begin[int(status['time']) % 100];
-            # User.write(class_start)
-            class_start = 8 * 3600;
-            print('Write into MySQL class_start is', class_start);
+            this_class_start = class_begin[int(status['time'][1:3])];
+            # User.write(this_class_start)
+            print('Write into MySQL this_class_start is', this_class_start);
+            # write end
+            this_class_end = class_end[int(status['time']) % 100];
+            # User.write(this_class_end)
+            print(status['time'], 'Write into MySQL this_class_end is', this_class_end);
             # write end
         this_start = GetRelTime()[0];
         # User.write(this_start)
@@ -33,22 +36,22 @@ def TimerStop(username = '', token = ''):
     print('set userid as', username);
     # set end
     now = GetRelTime()[0];
-    # class_end = User.read(class_end)
-    class_end = 16 * 3600 + 10 * 60; # 3 pm
-    print('Read from MySQL class_end is', class_end);
+    # this_class_end = User.read(this_class_end)
+    this_class_end = 16 * 3600 + 10 * 60; # 3 pm
+    print('Read from MySQL class_end is', this_class_end);
     # read end
     # this_start = User.read(this_start)
     this_start = 5 * 3600; # 5 am
     print('Read from MySQL this_start is', this_start);
     # read end
-    if class_end > now:
+    if this_class_end > now:
         t = now - this_start;
         # User.add(this_study, t);
         print('In MySQL this_study add', t);
         # add end
         return {'status': 1, 'message': 'Stopped successfully'};
     else:
-        t = class_end - this_start;
+        t = this_class_end - this_start;
         # User.add(this_study, t);
         print('In MySQL this_study add', t);
         # add end
@@ -91,4 +94,4 @@ def Submit(username = ''):
     return {'status': 1};
 
 if __name__ == '__main__':
-    TimerStop();
+    TimerStart();

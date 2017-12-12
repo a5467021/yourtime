@@ -3,6 +3,7 @@
 from flask import Flask, make_response
 from flask import request
 from ProjectLib import *
+import random
 
 def pack(data = ''): # solves the access-control problem
     res = make_response(data);
@@ -16,11 +17,20 @@ app = Flask(__name__);
 
 @app.route('/login', methods = ['POST']) # provides authorization info
 def login():
+    user = User(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
     if request.form.get('type') == 'test':
         res = GetAuth(request.form.get('username'), request.form.get('password'));
+        user.userid = request.form.get('username');
     else:
         form = json.loads(request.data);
         res = GetAuth(form['username'], form['password']);
+        user.userid = form['username'];
+    profile = GetProfile(user.userid, res['token']);
+    user.gender = profile['gender'];
+    user.name = profile['name'];
+    user.school = profile['school'];
+    user.avatar = random.randrange(1,11,1);
+    user.save_name_userid_avatar_gender_school();
     # User.userid = form['username']
     # 查询userid，如果有记录的话直接返回，否则创建条目后返回
     return pack(json.dumps(res));
