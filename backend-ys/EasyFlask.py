@@ -1,4 +1,4 @@
-6#! /usr/bin/python3
+#! /usr/bin/python3
 
 from flask import Flask, Response, make_response
 from flask import request
@@ -97,8 +97,26 @@ def current_get():
               </form>
            ''';
 
+@app.route('/start', methods = ['POST'])
+def start_post():
+    if request.form.get('type') == 'test':
+        token = request.form.get('token');
+        username = request.form.get('username');
+        info = TimerStart(username, token);
+    else:
+        info = json.loads(request.data);
+        info = TimerStart(info['username'], info['token']);
+    return pack(json.dumps(info));
+    
+@app.route('/start', methods = ['GET'])
+def start_get():
+    return '''<form action="/start" method="post">
+              <p><input name="username"></p>
+              <p><input name="token"></p>
+              <input type="hidden" name="type" value="test" />
+              <p><button type="submit">Logc In</button></p>
+              </form>
+           ''';
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port = 3000);
-
-#schedule url: weixin.ncuos.com/schedule/api/schedule

@@ -16,7 +16,8 @@ class_begin = {
     10: 17 * 3600 + 25 * 60,
     11: 19 * 3600 + 0 * 60,
     12: 19 * 3600 + 50 * 60,
-    13: 20 * 3600 + 40 * 60
+    13: 20 * 3600 + 40 * 60,
+    14: 24 * 3600 + 0 * 60
     };
 
 class_end = {
@@ -35,33 +36,44 @@ class_end = {
     13: 21 * 3600 + 25 * 60
     };
 
+def GetRelTime():
+    t = time.localtime(time.time());
+    current = -1;
+    day = t[6] + 1;
+    t = t[3] * 3600 + t[4] * 60 + t[5];
+    return [t, day];
+
 def IsClassOn(t = '', now = []): # t is time string, now contains [currentclass, currentweek]
+    print('In \'IsClassOn(t, now):\'');
     day = int(t[0]);
     t = int(t[1:]);
     classes = [];
     while t:
         classes.append(t % 100);
         t = int(t / 100);
-    print('now day', now[1], 'class day', day);
+    # loads classes
     if not now[1] == day:
         return 0;
-    if now[0] in classes:
+    if now[0] <= classes[0] and now[0] >= classes.pop():
         return 1;
     else:
         return 0;
+    # returns whether class is on(1) or not(0)
 
-def ClassTime():
+def ClassTime(): # don't need parameters, just gets current time
     print('In \'ClassTime():\'');
-    t = time.localtime(time.time());
-    current = -1;
-    day = t[6] + 1;
-    t = t[3] * 3600 + t[4] * 60 + t[5];
+    t = GetRelTime();
+    day = t[1];
+    t = t[0];
+    # set the every first second each day as 0, use relative seconds
     for n in range(1, 14):
-        if t >= class_begin[n] and t <= class_end[n]:
-            current = n;
+        if t >= class_begin[n] and t < class_begin[n+1]:
+            current = n + 0.5;
+            if t <= class_end[n]:
+                current -= 0.5;
             break;
-    print(current);
     return [current, day];
+    # returns [#currentclass, currentday]
 
 if __name__ == '__main__':
     ClassTime();

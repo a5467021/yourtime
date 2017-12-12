@@ -30,17 +30,16 @@ def GetClassInfo(username = '', password = '', coursename = ''): # get specific 
     info = requests.post(url = url, headers = headers, data = data);
     return info.json();
 
-def GetProfile(username = '', token = ''):
+def GetRawProfile(username = '', token = ''):
     dest = '/api/user/profile/basic';
     url = 'http://' + loginhost + dest;
     headers = GenHeader(token = token);
     print('headers:', headers);
     profile = requests.get(url = url, headers = headers);
-    print(profile.text);
     return profile.json();
 
-def GetGender(username = '', token = ''):
-    profile = GetProfile(username, token);
+def GetProfile(username = '', token = ''):
+    profile = GetRawProfile(username, token);
     roll = requests.get(url = 'http://' + loginhost + '/api/user/profile/school_roll', headers = GenHeader(token)).json();
     print(roll);
     return {'gender': profile['base_info']['xb']['mc'], 'name': profile['base_info']['xm'], 'department' : roll['school_roll'][0]['xy']};
@@ -56,5 +55,5 @@ def GetCurrentClass(username = '', token = ''):
         if not (week >= int(course['week'][0]) and week <= int(course['week'][1])):
             continue;
         elif IsClassOn(course['time'], ClassTime()) :
-            return {'courseName': course['name'], 'status': 1};
+            return {'courseName': course['name'], 'status': 1, 'time': course['time']};
     return {'status': 0};
