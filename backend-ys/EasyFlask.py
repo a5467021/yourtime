@@ -25,6 +25,8 @@ def login():
         form = json.loads(request.data);
         res = GetAuth(form['username'], form['password']);
         user.userid = form['username'];
+    if not res['status']:
+        return pack(json.dumps(res));
     profile = GetProfile(user.userid, res['token']);
     user.gender = profile['gender'];
     user.name = profile['name'];
