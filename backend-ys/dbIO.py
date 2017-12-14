@@ -143,10 +143,10 @@ class User(object):
         sql="select * from user"
         cursor.execute(sql)
         rows=cursor.fetchall()
-        print(rows)
         conn.commit()
         cursor.close()
         conn.close()
+        return rows
 
     def query_totaltime(self):
         conn = get_conn()
@@ -154,10 +154,11 @@ class User(object):
         sql = "select total_time from user where userid=%s"
         cursor.execute(sql,(self.userid))
         rows = cursor.fetchall()
-        print(rows)
-        conn.commit()
-        cursor.close()
-        conn.close()
+        for row in rows:
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return row['total_time']
 
     def query_totalstudy(self):
         conn = get_conn()
@@ -165,10 +166,11 @@ class User(object):
         sql = "select total_study from user where userid=%s"
         cursor.execute(sql,(self.userid))
         rows = cursor.fetchall()
-        print(rows)
-        conn.commit()
-        cursor.close()
-        conn.close()
+        for row in rows:
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return row['total_study']
 
     def query_thisclassstart(self):
         conn = get_conn()
@@ -176,10 +178,11 @@ class User(object):
         sql = "select this_class_start from user where userid=%s"
         cursor.execute(sql, (self.userid))
         rows = cursor.fetchall()
-        print(rows)
-        conn.commit()
-        cursor.close()
-        conn.close()
+        for row in rows:
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return row['this_class_start']
 
     def query_thisclassend(self):
         conn = get_conn()
@@ -187,10 +190,11 @@ class User(object):
         sql = "select this_class_end from user where userid=%s"
         cursor.execute(sql, (self.userid))
         rows = cursor.fetchall()
-        print(rows)
-        conn.commit()
-        cursor.close()
-        conn.close()
+        for row in rows:
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return row['this_class_end']
 
     def query_thisstart(self):
         conn = get_conn()
@@ -198,10 +202,11 @@ class User(object):
         sql = "select this_start from user where userid=%s"
         cursor.execute(sql, (self.userid))
         rows = cursor.fetchall()
-        print(rows)
-        conn.commit()
-        cursor.close()
-        conn.close()
+        for row in rows:
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return row['this_start']
 
     def query_thisstudy(self):
         conn = get_conn()
@@ -209,32 +214,38 @@ class User(object):
         sql = "select this_study from user where userid=%s"
         cursor.execute(sql, (self.userid))
         rows = cursor.fetchall()
-        print(rows)
-        conn.commit()
-        cursor.close()
-        conn.close()
+        for row in rows:
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return row['this_study']
 
-    def query_n_u_s_g_p_a(self):
+    def query_profile(self):
         conn = get_conn()
         cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
-        sql = "select name,userid,school,gender,percentage,avatar from user where userid=%s"
+        sql = "select name,userid,school,gender,percentage,avatar,total_time,total_study from user where userid=%s"
         cursor.execute(sql, (self.userid))
         rows = cursor.fetchall()
-        print(rows)
-        conn.commit()
-        cursor.close()
-        conn.close()
+        for row in rows:
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return row
 
-    def paiming100():
+    def paiming100(self):
         conn = get_conn()
         cursor=conn.cursor(cursor=pymysql.cursors.DictCursor)
-        sql="select name,achievement from user order by achievement desc limit 100 "
+        sql="select name,avatar,total_time,total_study,percentage from user order by percentage desc limit 100 "
         cursor.execute(sql)
         rows=cursor.fetchall()
-        print(rows)
+        for i in rows:
+            i['total_time'] = round(i['total_time'] / 3600.0, 1)
+            i['total_study']  = round(i['total_study'] / 3600.0, 1)
+            i['percentage'] = round(i['percentage'] * 100, 4)
         conn.commit()
         cursor.close()
         conn.close()
+        return rows
 
     def chaxunmingci(self):
         conn = get_conn()
@@ -242,8 +253,23 @@ class User(object):
         sql="select rank from (select userid,(@rank:=@rank+1)as rank from user,(select(@rank :=0))temp order by percentage desc)userid where userid=%s"
         cursor.execute(sql,(self.userid))
         rows=cursor.fetchall()
-        print(rows)
+        for row in rows:
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return row['rank']
+
+    def isexist(self):
+        conn=get_conn()
+        cursor=conn.cursor()
+        sql="select userid from user where userid = %s"
+        x=cursor.execute(sql,(self.userid))
+        if x==0:
+            i=0
+        else :
+            i=1
         conn.commit()
         cursor.close()
         conn.close()
+        return i
 

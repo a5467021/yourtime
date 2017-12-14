@@ -16,9 +16,9 @@ def GetAuth(username = '', password = ''): # get "Authorization" token
     url = 'https://' + loginhost + dest;
     headers = {'Content-Type': 'application/json'};
     data = '{"username": "' + username + '", "password": "' + password + '"}';
-    print('headers: ', headers);
-    print('data: ', data);
-    print('url: ', url);
+    # print('headers: ', headers);
+    # print('data: ', data);
+    # print('url: ', url);
     AuthToken = requests.post(url = url, headers = headers, data = data).json();
     if(AuthToken['status']):
         print('Login success, token is', AuthToken['token']);

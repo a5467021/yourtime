@@ -29,9 +29,10 @@ def login():
     user.gender = profile['gender'];
     user.name = profile['name'];
     user.school = profile['school'];
-    user.avatar = random.randrange(1,11,1);
-    user.save_name_userid_avatar_gender_school();
-    # User.userid = form['username']
+    if not user.isexist():
+        user.avatar = random.randrange(1,11,1);
+        user.save_name_userid_avatar_gender_school();
+    # User.userid = form['userid']
     # 查询userid，如果有记录的话直接返回，否则创建条目后返回
     return pack(json.dumps(res));
 
@@ -47,21 +48,29 @@ def test_login():
 
 @app.route('/profile', methods = ['POST']) # provides student profile
 def profile_post():
+    user = User(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
     if request.form.get('type') == 'test':
-        token = request.form.get('token');
-        username = request.form.get('username');
-        info = GetProfile(username, token);
+        user.userid = request.form.get('userid');
     else:
         info = json.loads(request.data);
-        info = GetProfile(info['username'], info['token']);
+        user.userid = info['userid'];
+    extrainfo = user.query_profile();
+    info = {'avatar': extrainfo['avatar'], 'profile': {}};
+    info['profile']['学号'] = user.userid;
+    info['profile']['姓名'] = extrainfo['name'];
+    info['profile']['性别'] = extrainfo['gender'];
+    info['profile']['学院'] = extrainfo['school'];
+    info['profile']['总时间'] = round(extrainfo['total_time'] / 3600.0, 1);
+    info['profile']['学习时间'] = round(extrainfo['total_study'] / 3600.0, 1);
+    info['profile']['当前排名'] = user.chaxunmingci();
+    info['profile']['分数'] = round(extrainfo['percentage'] * 100, 4);
     return pack(json.dumps(info));
     
 
 @app.route('/profile', methods = ['GET'])
 def profile_get():
     return '''<form action="/profile" method="post">
-              <p><input name="username"></p>
-              <p><input name="token"></p>
+              <p><input name="userid"></p>
               <input type="hidden" name="type" value="test" />
               <p><button type="submit">Logr In</button></p>
               </form>
@@ -113,17 +122,17 @@ def current_get():
 def start_post():
     if request.form.get('type') == 'test':
         token = request.form.get('token');
-        username = request.form.get('username');
+        username = request.form.get('userid');
         info = TimerStart(username, token);
     else:
         info = json.loads(request.data);
-        info = TimerStart(info['username'], info['token']);
+        info = TimerStart(info['userid'], info['token']);
     return pack(json.dumps(info));
     
 @app.route('/start', methods = ['GET'])
 def start_get():
     return '''<form action="/start" method="post">
-              <p><input name="username"></p>
+              <p><input name="userid"></p>
               <p><input name="token"></p>
               <input type="hidden" name="type" value="test" />
               <p><button type="submit">Logc In</button></p>
@@ -134,22 +143,28 @@ def start_get():
 def stop_post():
     if request.form.get('type') == 'test':
         token = request.form.get('token');
-        username = request.form.get('username');
+        username = request.form.get('userid');
         info = TimerStop(username, token);
     else:
         info = json.loads(request.data);
-        info = TimerStop(info['username'], info['token']);
+        info = TimerStop(info['userid'], info['token']);
     return pack(json.dumps(info));
     
 @app.route('/stop', methods = ['GET'])
 def stop_get():
     return '''<form action="/stop" method="post">
-              <p><input name="username"></p>
+              <p><input name="userid"></p>
               <p><input name="token"></p>
               <input type="hidden" name="type" value="test" />
               <p><button type="submit">Logc In</button></p>
               </form>
            ''';
+
+@app.route('/ranklist', methods = ['GET', 'POST'])
+def ranklist():
+    user = User(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+    info = user.paiming100();
+    return pack(json.dumps(info));
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port = 3000);
