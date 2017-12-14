@@ -51,6 +51,8 @@ def TimerStop(username = '', token = ''):
     user.this_start = user.query_thisstart();
     print('read', 'user.this_start', user.this_start); #debug
     #3 read end
+    if user.this_class_start == -1:
+        return {'status': 1, 'message': 'Class not on now'};
     if user.this_class_end > now:
         t = now - user.this_start;
         #4 user.add(this_study, t)
