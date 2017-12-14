@@ -55,4 +55,4 @@ def GetCurrentClass(username = '', token = ''):
             continue;
         elif IsClassOn(course['time'], ClassTime()) :
             return {'courseName': course['name'], 'status': 1, 'time': course['time']};
-    return {'status': 0};
+    return {'courseName': '', 'status': 0};

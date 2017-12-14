@@ -57,15 +57,15 @@ def profile_post():
         info = json.loads(request.data);
         user.userid = info['userid'];
     extrainfo = user.query_profile();
-    info = {'avatar': extrainfo['avatar'], 'profile': {}};
-    info['profile']['学号'] = user.userid;
-    info['profile']['姓名'] = extrainfo['name'];
-    info['profile']['性别'] = extrainfo['gender'];
-    info['profile']['学院'] = extrainfo['school'];
-    info['profile']['总时间'] = round(extrainfo['total_time'] / 3600.0, 1);
-    info['profile']['学习时间'] = round(extrainfo['total_study'] / 3600.0, 1);
-    info['profile']['当前排名'] = user.chaxunmingci();
-    info['profile']['分数'] = round(extrainfo['percentage'] * 100, 4);
+    info = {'avatar': extrainfo['avatar'], 'profile': []};
+    info['profile'].append({'key': '学号', 'value': user.userid});
+    info['profile'].append({'key': '姓名', 'value': extrainfo['name']});
+    info['profile'].append({'key': '性别', 'value': extrainfo['gender']});
+    info['profile'].append({'key': '学院', 'value': extrainfo['school']});
+    info['profile'].append({'key': '总时间', 'value': round(extrainfo['total_time'] / 3600.0, 1)});
+    info['profile'].append({'key': '学习时间', 'value': round(extrainfo['total_study'] / 3600.0, 1)});
+    info['profile'].append({'key': '当前排名', 'value': user.chaxunmingci()});
+    info['profile'].append({'key': '分数', 'value': round(extrainfo['percentage'] * 100, 4)});
     return pack(json.dumps(info));
     
 
