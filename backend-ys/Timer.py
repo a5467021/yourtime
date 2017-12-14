@@ -51,7 +51,7 @@ def TimerStop(username = '', token = ''):
     user.this_start = user.query_thisstart();
     print('read', 'user.this_start', user.this_start); #debug
     #3 read end
-    if user.this_class_start == -1:
+    if user.this_start == -1:
         return {'status': 1, 'message': 'Timer not on now'};
     if user.this_class_end > now:
         t = now - user.this_start;
@@ -61,15 +61,25 @@ def TimerStop(username = '', token = ''):
         print('add', 'user.this_study', user.this_study - t, '->', user.this_study); #debug
         user.save_thisstudy();
         #4 add end
+        #5 user.write(this_start)
+        user.this_start = -1;
+        user.save_thisstart();
+        print('write', 'user.this_start', user.this_start);
+        #5 write end
         return {'status': 1, 'message': 'Stopped successfully'};
     else:
         t = user.this_class_end - user.this_start;
-        #5 User.add(this_study, t);
+        #6 User.add(this_study, t);
         user.this_study = user.query_thisstudy();
         user.this_study += t;
         print('add', 'user.this_study', user.this_study - t, '->', user.this_study); #debug
         user.save_thisstudy();
-        #5 add end
+        #6 add end
+        #7 user.write(this_start)
+        user.this_start = -1;
+        user.save_thisstart();
+        print('write', 'user.this_start', user.this_start);
+        #7 write end
         Submit(username);
         return {'status': 1, 'message': 'Submitted successfully'};
     return {'status': 0, 'message': 'Unknown error'};
